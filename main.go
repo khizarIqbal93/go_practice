@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -10,20 +11,28 @@ import (
 )
 
 type CrawlRequest struct {
-	Url   string `json:"name"`
+	Url   string `json:"url"`
 	Depth int    `json:"depth"`
 }
 
 func requestHandler(w http.ResponseWriter, r *http.Request) {
-	body, _ := io.ReadAll(r.Body)
+	body, err := io.ReadAll(r.Body)
+
+	if err != nil {
+		fmt.Fprint(w, http.StatusBadRequest)
+		log.Println(err)
+	}
+
 	data := CrawlRequest{}
 	json.Unmarshal(body, &data)
-	w.WriteHeader(http.StatusCreated)
+	log.Println(data)
+	w.WriteHeader(http.StatusAccepted)
+	fmt.Fprintf(w, "crawling")
 }
 
 func main() {
 	r := mux.NewRouter()
 
-	r.HandleFunc("/category", requestHandler).Methods("POST")
+	r.HandleFunc("/crawl", requestHandler).Methods("POST")
 	log.Fatal(http.ListenAndServe(":8000", r))
 }
