@@ -2,6 +2,7 @@ package crawl
 
 import (
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -14,19 +15,19 @@ type Page struct {
 	Page      string   `json:"page"`
 	ParentUrl *url.URL `json:"-"`
 	Parent    string   `json:"parent"`
-	Links     []Page   `json:"links"`
+	Links     []Page   `json:"links,omitempty"`
 }
 
 func (p *Page) SetPageUrl(urlString string, isRoot bool) {
 	parsedUrl, err := url.Parse(urlString)
-
 	if err != nil {
-		panic(err)
+		log.Println("url could not be parsed")
 	}
 
 	if parsedUrl.Scheme == "" {
 		parsedUrl.Scheme = "https"
 	}
+
 	// TODO fix this
 	if parsedUrl.Host == "" {
 		newHost, newPath, _ := strings.Cut(parsedUrl.Path, "/")
@@ -39,24 +40,23 @@ func (p *Page) SetPageUrl(urlString string, isRoot bool) {
 
 	p.PageUrl = parsedUrl
 	if isRoot {
-		p.ParentUrl, _ = url.Parse("https://" + p.PageUrl.Host)
+		p.ParentUrl, _ = url.Parse(p.PageUrl.String())
 	}
-
 	p.Page = p.PageUrl.String()
 	p.Parent = p.ParentUrl.String()
 }
 
 // returns the DOM of urlString as a string
-func GetHtml(urlString string) string {
+func getHtml(urlString string) string {
 	resp, err := http.Get(urlString)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 	html := string(body)
 	return html
@@ -80,11 +80,10 @@ func (p *Page) GetLinks(visited map[string]int) {
 		}
 	}
 
-	// TODO check if domain host is same
 	if visited[p.PageUrl.String()] == 0 && p.ParentUrl.Host == p.PageUrl.Host {
-		doc, err := html.Parse(strings.NewReader(GetHtml(p.PageUrl.String())))
+		doc, err := html.Parse(strings.NewReader(getHtml(p.PageUrl.String())))
 		if err != nil {
-			panic(err)
+			log.Println("Error parsing HTML")
 		}
 		visited[p.PageUrl.String()]++
 		f(doc)
