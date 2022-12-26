@@ -9,8 +9,8 @@ type urlTest struct {
 }
 
 var urlTests = []urlTest{
-	urlTest{"https://go.dev/doc/code#Testing", true, "https://go.dev/doc/code#Testing"},
-	urlTest{"https://www.youtube.com/watch?v=IbFGG4T3_Yo", true, "https://www.youtube.com/watch?v=IbFGG4T3_Yo"},
+	{"https://go.dev/doc/code#Testing", true, "https://go.dev/doc/code#Testing"},
+	{"https://www.youtube.com/watch?v=IbFGG4T3_Yo", true, "https://www.youtube.com/watch?v=IbFGG4T3_Yo"},
 }
 
 func TestSetPageUrl(t *testing.T) {
