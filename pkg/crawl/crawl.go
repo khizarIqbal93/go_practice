@@ -40,7 +40,10 @@ func (p *Page) SetPageUrl(urlString string, isRoot bool) {
 
 	p.PageUrl = parsedUrl
 	if isRoot {
-		p.ParentUrl, _ = url.Parse(p.PageUrl.String())
+		p.ParentUrl, err = url.Parse(p.PageUrl.String())
+		if err != nil {
+			log.Println("something went wrong when parsing")
+		}
 	}
 	p.Page = p.PageUrl.String()
 	p.Parent = p.ParentUrl.String()
