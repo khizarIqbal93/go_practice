@@ -4,6 +4,7 @@
 - [x] Attempt to turn the project into a web application (POST endpoint) - Gorilla Mux is a good package to use for this
 - [x] Write some Unit Tests for different components using Testify is what we use
 - [ ](learn about mocks)
-- [x] Learn about GORM and attempt to implement a persistence layer
+- [x] Learn and implement GORM
+- [x] attempt to implement a persistence layer MySQL
 - [ ] Learn about Docker and attempt to build an image locally
 - [ ] Learn about Kubernetes and attempt to deploy a cluster locally (we use GCP)
