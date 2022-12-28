@@ -1,30 +1,28 @@
 package db
 
 import (
-	"database/sql"
 	"log"
+	"time"
 
-	_ "github.com/go-sql-driver/mysql"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
-func AddLink() {
-	db, err := sql.Open("mysql", "root:Passw0rd@/crawl")
-	if err != nil {
-		log.Println(err.Error())
-	}
-	defer db.Close()
+type Webpage struct {
+	WebpageID    uint   `json:"-"`
+	Webpage      string `json:"webpageUrl"`
+	Description  string `json:"description"`
+	LastModified time.Time
 }
 
-func PostLink() {
-	db, err := sql.Open("mysql", "root:Passw0rd@/crawl")
+func GetLink() Webpage {
+	dsn := "root:Passw0rd@/crawl"
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Println(err.Error())
 	}
-	defer db.Close()
 
-	insert, err := db.Query("INSERT INTO webpages (webpage, description) VALUES('https://go.dev/blog/maps', 'hello')")
-	if err != nil {
-		log.Println(err.Error())
-	}
-	defer insert.Close()
+	var webpage Webpage
+	db.First(&webpage)
+	return webpage
 }
