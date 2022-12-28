@@ -3,6 +3,8 @@ package crawl
 import (
 	"net/url"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 type urlTest struct {
@@ -19,6 +21,7 @@ var urlTests = []urlTest{
 }
 
 func TestSetPageUrl(t *testing.T) {
+	assert := assert.New(t)
 	for _, test := range urlTests {
 		page := Page{}
 		if !test.isRoot {
@@ -26,8 +29,6 @@ func TestSetPageUrl(t *testing.T) {
 		}
 
 		page.SetPageUrl(test.urlString, test.isRoot)
-		if page.Page != test.expectedUrlString {
-			t.Errorf("Expected %q but got %q", test.expectedUrlString, page.Page)
-		}
+		assert.Equal(page.Page, test.expectedUrlString, "url should be the same")
 	}
 }

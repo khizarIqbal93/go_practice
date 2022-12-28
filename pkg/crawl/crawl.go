@@ -18,6 +18,7 @@ type Page struct {
 	Links     []Page   `json:"links,omitempty"`
 }
 
+// initializes and parses the url for a given Page struct
 func (p *Page) SetPageUrl(urlString string, isRoot bool) {
 	parsedUrl, err := url.Parse(urlString)
 	if err != nil {
@@ -28,7 +29,7 @@ func (p *Page) SetPageUrl(urlString string, isRoot bool) {
 		parsedUrl.Scheme = "https"
 	}
 
-	// TODO fix this
+	// bugs here - fix later
 	if parsedUrl.Host == "" {
 		newHost, newPath, _ := strings.Cut(parsedUrl.Path, "/")
 		parsedUrl.Host = newHost
@@ -65,6 +66,7 @@ func getHtml(urlString string) string {
 	return html
 }
 
+// adds links to links slice for a given page
 func (p *Page) GetLinks(visited map[string]int) {
 	var f func(*html.Node)
 	f = func(n *html.Node) {
