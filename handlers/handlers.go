@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"prep/pkg/crawl"
+	"prep/pkg/db"
 )
 
 type CrawlRequest struct {
@@ -38,6 +39,20 @@ func RequestHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "something went wrong")
 	}
 
+	db.PostLink()
+
 	w.WriteHeader(http.StatusAccepted)
 	fmt.Fprint(w, string(res))
+}
+
+func GetLinkHandler(w http.ResponseWriter, r *http.Request) {
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprint(w, "Something is wrong with the body of the request")
+		log.Println(err)
+	}
+
+	resString := "did you say " + string(body)
+	fmt.Fprintln(w, resString)
 }

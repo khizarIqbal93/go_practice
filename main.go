@@ -12,5 +12,6 @@ func main() {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/crawl", handlers.RequestHandler).Methods("POST")
+	r.HandleFunc("/hello", handlers.GetLinkHandler).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8000", r))
 }
